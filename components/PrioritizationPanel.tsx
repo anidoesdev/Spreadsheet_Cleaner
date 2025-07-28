@@ -72,7 +72,7 @@ export default function PrioritizationPanel({
 
     // Update parent component
     onConfigChange(config);
-  }, [selectedProfile, pairwiseComparisons, consistencyRatio, onConfigChange]);
+  }, [selectedProfile, pairwiseComparisons, consistencyRatio]); // Removed onConfigChange from dependencies
 
   const handleProfileSelect = (profile: PrioritizationProfile) => {
     setSelectedProfile(profile);
@@ -88,9 +88,11 @@ export default function PrioritizationPanel({
     });
 
     // Normalize weights to sum to 1
-    const normalizedCriteria = normalizeWeights(updatedCriteria).map((weight, index) => ({
-      ...updatedCriteria[index],
-      weight
+    const weights = updatedCriteria.map(c => c.weight);
+    const normalizedWeights = normalizeWeights(weights);
+    const normalizedCriteria = updatedCriteria.map((criterion, index) => ({
+      ...criterion,
+      weight: normalizedWeights[index]
     }));
 
     setCustomCriteria(normalizedCriteria);
@@ -119,9 +121,11 @@ export default function PrioritizationPanel({
     }));
 
     // Normalize weights
-    const normalizedCriteria = normalizeWeights(updatedCriteria).map((weight, index) => ({
-      ...updatedCriteria[index],
-      weight
+    const weights = updatedCriteria.map(c => c.weight);
+    const normalizedWeights = normalizeWeights(weights);
+    const normalizedCriteria = updatedCriteria.map((criterion, index) => ({
+      ...criterion,
+      weight: normalizedWeights[index]
     }));
 
     setCustomCriteria(normalizedCriteria);

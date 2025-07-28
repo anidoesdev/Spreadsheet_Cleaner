@@ -50,7 +50,7 @@ export default function RuleBuilder({ data, onRulesChange }: RuleBuilderProps) {
 
   useEffect(() => {
     onRulesChange(rules);
-  }, [rules, onRulesChange]);
+  }, [rules]);
 
   useEffect(() => {
     if (data && Object.keys(data).length > 0) {

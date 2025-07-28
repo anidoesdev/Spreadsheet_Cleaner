@@ -64,7 +64,7 @@ export default function Home() {
                 setRowErrors(allErrors)
             }, 100);
         }
-    },[editedData, entity, crossEntityData, dispatch])
+    },[editedData, entity, dispatch]) // Removed crossEntityData
 
     //inline editing
     function handleEditing(rowIdx: number, key: string, value: string){
