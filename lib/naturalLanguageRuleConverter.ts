@@ -145,7 +145,7 @@ function extractGroupName(text: string, data: any, groupType: 'client' | 'worker
   
   // Try to match partial names
   for (const group of groups) {
-    if (text.toLowerCase().includes(group.toLowerCase())) {
+    if (group && typeof group === 'string' && text.toLowerCase().includes(group.toLowerCase())) {
       return group;
     }
   }
@@ -408,7 +408,7 @@ export function generateContextualSuggestions(text: string, data: any): string[]
     data.workers.forEach((worker: any) => {
       if (worker.skills) {
         const skills = worker.skills.split(',').map((s: string) => s.trim());
-        skills.forEach(skill => allSkills.add(skill));
+        skills.forEach((skill: string) => allSkills.add(skill));
       }
     });
     

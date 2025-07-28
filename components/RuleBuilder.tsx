@@ -176,15 +176,22 @@ export default function RuleBuilder({ data, onRulesChange }: RuleBuilderProps) {
     URL.revokeObjectURL(url);
   };
 
-  const getAvailableTasks = () => {
+  interface TaskOption {
+    id: string;
+    name: string;
+  }
+
+  const getAvailableTasks = (): TaskOption[] => {
     return data.tasks?.map((t: any) => ({ id: t.taskid, name: t.taskname })) || [];
   };
 
-  const getAvailableGroups = (type: 'client' | 'worker') => {
+  const getAvailableGroups = (type: 'client' | 'worker'): any[] => {
     if (type === 'client') {
-      return [...new Set(data.clients?.map((c: any) => c.grouptag) || [])];
+      const groups = data.clients?.map((c: any) => c.grouptag) || [];
+      return [...new Set(groups)];
     } else {
-      return [...new Set(data.workers?.map((w: any) => w.workergroup) || [])];
+      const groups = data.workers?.map((w: any) => w.workergroup) || [];
+      return [...new Set(groups)];
     }
   };
 
@@ -275,7 +282,7 @@ export default function RuleBuilder({ data, onRulesChange }: RuleBuilderProps) {
                     Select Tasks to Run Together
                   </label>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-2 max-h-40 overflow-y-auto">
-                    {getAvailableTasks().map(task => (
+                    {getAvailableTasks().map((task: TaskOption) => (
                       <label key={task.id} className="flex items-center space-x-2">
                         <input
                           type="checkbox"
@@ -435,7 +442,7 @@ export default function RuleBuilder({ data, onRulesChange }: RuleBuilderProps) {
                     className="w-full p-2 bg-gray-700 border border-gray-600 rounded text-gray-200"
                   >
                     <option value="">Select a task</option>
-                    {getAvailableTasks().map(task => (
+                    {getAvailableTasks().map((task: TaskOption) => (
                       <option key={task.id} value={task.id}>{task.name}</option>
                     ))}
                   </select>

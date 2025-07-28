@@ -504,7 +504,7 @@ export function generateExcelData(exportData: PrioritizationConfig['exportData']
     prioritization: {
       Profile: exportData.prioritization.profile.name,
       Description: exportData.prioritization.profile.description,
-      Criteria: exportData.prioritization.criteria.map(c => ({
+      Criteria: exportData.prioritization.criteria.map((c: any) => ({
         Criterion: c.name,
         Weight: c.weight.toFixed(3),
         Category: c.category,

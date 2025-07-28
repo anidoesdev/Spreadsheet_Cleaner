@@ -606,7 +606,7 @@ function analyzeSkillGaps(data: any): RuleRecommendation[] {
   data.tasks.forEach((task: any) => {
     if (task.requiredskills) {
       const skills = task.requiredskills.split(',').map((skill: string) => skill.trim());
-      skills.forEach(skill => requiredSkills.add(skill));
+      skills.forEach((skill: string) => requiredSkills.add(skill));
     }
   });
 
@@ -615,7 +615,7 @@ function analyzeSkillGaps(data: any): RuleRecommendation[] {
   data.workers.forEach((worker: any) => {
     if (worker.skills) {
       const skills = worker.skills.split(',').map((skill: string) => skill.trim());
-      skills.forEach(skill => availableSkills.add(skill));
+      skills.forEach((skill: string) => availableSkills.add(skill));
     }
   });
 
