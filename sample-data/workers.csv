@@ -1,0 +1,11 @@
+WorkerID,WorkerName,Skills,AvailableSlots,MaxLoadPerPhase,WorkerGroup,QualificationLevel
+WRK001,John Developer,"javascript,python,react,node.js","[1,2,3,4,5]",3,Development,Senior
+WRK002,Jane Designer,"figma,sketch,ui/ux,prototyping","[2,4,6]",2,Design,Expert
+WRK003,Bob Manager,"leadership,project management,agile,scrum","[1,3,5]",4,Management,Senior
+WRK004,Alice Analyst,"data analysis,sql,excel,python,statistics","[1,2,3,4]",2,Analytics,Junior
+WRK005,Charlie Engineer,"java,python,c++,system design,algorithms","[2,4,6]",3,Engineering,Expert
+WRK006,David Designer,"figma,sketch,illustrator,photoshop","[1,2,3]",2,Design,Senior
+WRK007,Eva Developer,"javascript,typescript,react,vue,angular","[1,3,5]",3,Development,Expert
+WRK008,Frank Manager,"leadership,communication,strategic planning","[2,4]",2,Management,Senior
+WRK009,Grace Analyst,"python,r,statistics,machine learning","[1,2,3,4,5]",2,Analytics,Expert
+WRK010,Henry Engineer,"python,java,cloud computing,devops","[1,2,3]",3,Engineering,Senior 

@@ -1,0 +1,11 @@
+ClientID,ClientName,PriorityLevel,RequestedTaskIDs,GroupTag,AttributesJSON
+CL001,Acme Corporation,3,"TASK001,TASK002,TASK003",Enterprise,"{""industry"":""technology"",""size"":""large"",""contact"":""john.doe@acme.com""}"
+CL002,StartupXYZ,5,"TASK004,TASK005",Startup,"{""industry"":""fintech"",""funding"":""series-a"",""team_size"":15}"
+CL003,Global Industries,2,"TASK001,TASK006,TASK007",Enterprise,"{""industry"":""manufacturing"",""locations"":[""US"",""EU"",""Asia""],""employees"":5000}"
+CL004,Local Business,4,"TASK008",SMB,"{""industry"":""retail"",""location"":""downtown"",""years_in_business"":5}"
+CL005,High Priority Client,1,"TASK012,TASK013,TASK014",Enterprise,"{""industry"":""defense"",""security_clearance"":""top-secret""}"
+CL006,Medium Priority,3,"TASK009,TASK010",Startup,"{""industry"":""healthcare"",""compliance"":""HIPAA""}"
+CL007,Low Priority,5,"TASK015",SMB,"{""industry"":""food"",""cuisine"":""italian""}"
+CL008,Multiple Tasks,2,"TASK001,TASK002,TASK003,TASK004,TASK005",Enterprise,"{""industry"":""consulting"",""specialization"":""strategy""}"
+CL009,Single Task,4,"TASK016",Startup,"{""industry"":""gaming"",""platform"":""mobile""}"
+CL010,Enterprise Client,1,"TASK017,TASK018,TASK019",Enterprise,"{""industry"":""energy"",""renewable"":true}" 

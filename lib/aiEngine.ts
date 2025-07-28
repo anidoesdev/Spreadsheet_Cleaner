@@ -187,9 +187,9 @@ export const aiValidationRules: AIValidationRule[] = [
       if (!durationColumn || !titleColumn) return suggestions;
       
       data.forEach((row, index) => {
-        const duration = row[durationColumn];
-        const title = row[titleColumn];
-        const priority = row[priorityColumn];
+        const duration = durationColumn ? row[durationColumn] : null;
+        const title = titleColumn ? row[titleColumn] : null;
+        const priority = priorityColumn ? row[priorityColumn] : null;
         
         if (!duration && title) {
           // Simple duration estimation based on title keywords
@@ -256,14 +256,35 @@ export function parseNaturalLanguageQuery(query: string): { operation: string; c
     });
   }
   
-  // Parse priority conditions
-  const priorityMatch = lowerQuery.match(/priority\s+(?:level\s+)?(?:of\s+)?(?:more\s+than|greater\s+than|>\s*)(\d+)/);
-  if (priorityMatch) {
+  // Parse priority conditions - FIXED REGEX PATTERNS
+  const priorityGreaterMatch = lowerQuery.match(/(?:.*\s+)?priority\s+(?:level\s+)?(?:greater\s+than|more\s+than|>\s*)\s*(\d+)/);
+  if (priorityGreaterMatch) {
     conditions.push({
       column: 'prioritylevel',
       operator: '>',
-      value: parseInt(priorityMatch[1])
+      value: parseInt(priorityGreaterMatch[1])
     });
+  }
+  
+  const priorityLessMatch = lowerQuery.match(/(?:.*\s+)?priority\s+(?:level\s+)?(?:less\s+than|<\s*)\s*(\d+)/);
+  if (priorityLessMatch) {
+    conditions.push({
+      column: 'prioritylevel',
+      operator: '<',
+      value: parseInt(priorityLessMatch[1])
+    });
+  }
+  
+  // Parse exact priority level (only if no other priority conditions found)
+  if (!priorityGreaterMatch && !priorityLessMatch) {
+    const priorityExactMatch = lowerQuery.match(/(?:.*\s+)?priority\s+(?:level\s+)?(\d+)/);
+    if (priorityExactMatch) {
+      conditions.push({
+        column: 'prioritylevel',
+        operator: '=',
+        value: parseInt(priorityExactMatch[1])
+      });
+    }
   }
   
   // Parse phase conditions
@@ -296,6 +317,41 @@ export function parseNaturalLanguageQuery(query: string): { operation: string; c
       column: 'workergroup',
       operator: '=',
       value: roleMatch[1].trim()
+    });
+  }
+  
+  // Parse group conditions
+  const groupMatch = lowerQuery.match(/group\s+(?:of\s+)?([a-zA-Z\s]+)/);
+  if (groupMatch) {
+    conditions.push({
+      column: 'grouptag',
+      operator: '=',
+      value: groupMatch[1].trim()
+    });
+  }
+  
+  // Parse specific group keywords
+  if (lowerQuery.includes('enterprise')) {
+    conditions.push({
+      column: 'grouptag',
+      operator: '=',
+      value: 'enterprise'
+    });
+  }
+  
+  if (lowerQuery.includes('startup')) {
+    conditions.push({
+      column: 'grouptag',
+      operator: '=',
+      value: 'startup'
+    });
+  }
+  
+  if (lowerQuery.includes('small')) {
+    conditions.push({
+      column: 'grouptag',
+      operator: '=',
+      value: 'small'
     });
   }
   
@@ -394,9 +450,11 @@ function isValidEmail(email: string): boolean {
 function matchesCondition(value: any, condition: any): boolean {
   switch (condition.operator) {
     case '>':
-      return typeof value === 'number' && value > condition.value;
+      const numValue = typeof value === 'string' ? parseInt(value) : value;
+      return typeof numValue === 'number' && !isNaN(numValue) && numValue > condition.value;
     case '<':
-      return typeof value === 'number' && value < condition.value;
+      const numValue2 = typeof value === 'string' ? parseInt(value) : value;
+      return typeof numValue2 === 'number' && !isNaN(numValue2) && numValue2 < condition.value;
     case '=':
       return value === condition.value;
     case 'includes':

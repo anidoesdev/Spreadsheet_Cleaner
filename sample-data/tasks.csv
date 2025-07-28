@@ -1,0 +1,21 @@
+TaskID,TaskName,Category,Duration,RequiredSkills,PreferredPhases,MaxConcurrent
+TASK001,Frontend Development,Development,5,"javascript,react,html,css","[1,2,3]",3
+TASK002,Backend API,Development,8,"python,java,node.js,sql","[2,3,4]",2
+TASK003,UI/UX Design,Design,4,"figma,sketch,ui/ux,prototyping","[1,2]",2
+TASK004,Data Analysis,Analytics,6,"python,sql,excel,statistics","[2,3,4,5]",1
+TASK005,Project Planning,Management,3,"leadership,project management,agile","[1,2,3]",1
+TASK006,Complex Algorithm,Engineering,10,"python,java,c++,algorithms","[3,4,5]",1
+TASK007,Design System,Design,6,"figma,sketch,design systems","[2,3,4]",2
+TASK008,Database Design,Development,7,"sql,database design,normalization","[1,2,3]",1
+TASK009,Market Research,Analytics,4,"statistics,research methods,excel","[1,2]",1
+TASK010,Team Leadership,Management,5,"leadership,communication,strategic planning","[1,2,3,4]",1
+TASK011,Mobile Development,Development,8,"javascript,react native,mobile development","[2,3,4,5]",2
+TASK012,Security Audit,Engineering,6,"security,penetration testing,networking","[3,4,5]",1
+TASK013,Brand Identity,Design,5,"illustrator,photoshop,brand design","[1,2,3]",1
+TASK014,Performance Optimization,Development,4,"javascript,performance,optimization","[2,3]",2
+TASK015,Content Strategy,Management,3,"content strategy,marketing,communication","[1,2]",1
+TASK016,Cloud Migration,Engineering,12,"cloud computing,devops,migration","[4,5,6]",1
+TASK017,User Research,Analytics,4,"user research,interviews,data analysis","[1,2,3]",1
+TASK018,API Documentation,Development,3,"documentation,api design,technical writing","[2,3]",2
+TASK019,Quality Assurance,Engineering,5,"testing,qa,automation","[3,4,5]",2
+TASK020,Product Strategy,Management,6,"product strategy,business analysis,market research","[1,2,3,4]",1 

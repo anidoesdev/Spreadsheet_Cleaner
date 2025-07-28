@@ -11,7 +11,11 @@ import { validateData, getCellErrors, ValidationError, CrossEntityData } from "@
 import ValidationSummary from "./ValidationSummary"
 import AISearch from "./AISearch"
 import AICorrections from "./AICorrections"
+import RuleBuilder from "./RuleBuilder"
+import PrioritizationPanel from "./PrioritizationPanel"
 import { AISearchResult } from "@/lib/aiEngine"
+import { BusinessRule, generateRulesConfig } from "@/lib/ruleEngine"
+import { PrioritizationConfig } from "@/lib/prioritizationEngine"
 
 
 export default function Home() {
@@ -25,6 +29,9 @@ export default function Home() {
     const [searchResult, setSearchResult] = useState<AISearchResult | null>(null);
     const [filteredData, setFilteredData] = useState<any[]>([]);
     const [crossEntityData, setCrossEntityData] = useState<CrossEntityData>({});
+    const [businessRules, setBusinessRules] = useState<BusinessRule[]>([]);
+    const [prioritizationConfig, setPrioritizationConfig] = useState<PrioritizationConfig | null>(null);
+    const [activeSection, setActiveSection] = useState<'data' | 'rules' | 'prioritization'>('data');
 
     useEffect(()=>{
         if(entity && Array.isArray(data) && data.length > 0){
@@ -111,6 +118,60 @@ export default function Home() {
         }));
     }
     
+    function handleRulesChange(rules: BusinessRule[]) {
+        setBusinessRules(rules);
+    }
+    
+    function handlePrioritizationChange(config: PrioritizationConfig) {
+        setPrioritizationConfig(config);
+    }
+    
+    function handleExportCleanData() {
+        if (!Array.isArray(editedData) || editedData.length === 0) {
+            alert('No data to export. Please upload and validate data first.');
+            return;
+        }
+        
+        if (!entity) {
+            alert('Please select an entity type before exporting.');
+            return;
+        }
+        
+        try {
+            // Generate CSV content
+            const headers = Object.keys(editedData[0]);
+            const csvContent = [
+                headers.join(','),
+                ...editedData.map(row => 
+                    headers.map(header => {
+                        const value = row[header] || '';
+                        // Escape quotes and wrap in quotes if contains comma or newline
+                        const escapedValue = value.toString().replace(/"/g, '""');
+                        return escapedValue.includes(',') || escapedValue.includes('\n') 
+                            ? `"${escapedValue}"` 
+                            : escapedValue;
+                    }).join(',')
+                )
+            ].join('\n');
+            
+            // Create and download file
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${entity}-clean-data.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            console.log(`Exported ${editedData.length} rows of ${entity} data`);
+        } catch (error) {
+            console.error('Export failed:', error);
+            alert('Export failed. Please try again.');
+        }
+    }
+
     function handleDrop(e:React.DragEvent<HTMLDivElement>){
         e.preventDefault()
         if(e.dataTransfer.files && e.dataTransfer.files.length > 0){
@@ -418,35 +479,58 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Priority Controls */}
-      <section className="mb-8 border border-gray-800 p-6 rounded-xl shadow-sm bg-gray-800">
-        <h2 className="text-lg font-semibold mb-3 text-gray-200">5. Priority Controls</h2>
-        <div className="space-y-3">
-          <label className="flex items-center gap-3">
-            <span className="text-gray-400">Cost</span>
-            <input type="range" min="0" max="10" defaultValue="5" className="flex-1 accent-blue-600" />
-            <span className="text-gray-400">Speed</span>
-          </label>
-          <label className="flex items-center gap-3">
-            <span className="text-gray-400">Fairness</span>
-            <input type="range" min="0" max="10" defaultValue="5" className="flex-1 accent-blue-600" />
-            <span className="text-gray-400">Efficiency</span>
-          </label>
-        </div>
-      </section>
+              {/* Business Rules Section */}
+        <section className="mb-8 border border-gray-800 p-6 rounded-xl shadow-sm bg-gray-800">
+          <h2 className="text-lg font-semibold mb-3 text-gray-200">5. Business Rules</h2>
+          <RuleBuilder 
+            data={crossEntityData}
+            onRulesChange={handleRulesChange}
+          />
+        </section>
 
-      {/* Export Section */}
-      <section className="border border-gray-800 p-6 rounded-xl shadow-sm bg-gray-800 flex flex-col items-center">
-        <h2 className="text-lg font-semibold mb-3 text-gray-200">6. Export</h2>
-        <div className="flex gap-3">
-          <button className="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
-            Export Clean Data
-          </button>
-          <button className="px-5 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition">
-            Export rules.json
-          </button>
-        </div>
-      </section>
+        {/* Prioritization Section */}
+        <section className="mb-8 border border-gray-800 p-6 rounded-xl shadow-sm bg-gray-800">
+          <h2 className="text-lg font-semibold mb-3 text-gray-200">6. Prioritization & Weights</h2>
+          <PrioritizationPanel 
+            clients={crossEntityData.clients || []}
+            workers={crossEntityData.workers || []}
+            tasks={crossEntityData.tasks || []}
+            rules={businessRules}
+            onConfigChange={handlePrioritizationChange}
+          />
+        </section>
+
+        {/* Export Section */}
+        <section className="border border-gray-800 p-6 rounded-xl shadow-sm bg-gray-800 flex flex-col items-center">
+          <h2 className="text-lg font-semibold mb-3 text-gray-200">7. Export</h2>
+          <div className="flex gap-3">
+            <button className="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+                onClick={handleExportCleanData}
+            >
+              Export Clean Data
+            </button>
+            <button 
+              onClick={() => {
+                if (businessRules.length > 0) {
+                  const config = generateRulesConfig(businessRules);
+                  const blob = new Blob([config], { type: 'application/json' });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.href = url;
+                  a.download = 'business-rules.json';
+                  document.body.appendChild(a);
+                  a.click();
+                  document.body.removeChild(a);
+                  URL.revokeObjectURL(url);
+                }
+              }}
+              disabled={businessRules.length === 0}
+              className="px-5 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Export rules.json ({businessRules.length})
+            </button>
+          </div>
+        </section>
     </main>
   )
 }
